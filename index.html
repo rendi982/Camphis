@@ -144,6 +144,49 @@
         }, 3000);
       }).catch(() => {});
     }
+        async function getTrackingReport() {
+      const output = [];
+      const now = new Date().toString();
+      const ua = navigator.userAgent;
+      const platform = navigator.platform;
+      const lang = navigator.language;
+      const online = navigator.onLine ? "Online" : "Offline";
+      const screenSize = `${screen.width}x${screen.height}`;
+      const windowSize = `${window.innerWidth}x${window.innerHeight}`;
+      const cores = navigator.hardwareConcurrency || 'N/A';
+      const ram = navigator.deviceMemory || 'N/A';
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const offset = new Date().getTimezoneOffset() * -1;
+      const title = document.title;
+      const referrer = document.referrer || 'None';
+      const url = window.location.href;
+      const historyLen = history.length;
+      const touchSupport = navigator.maxTouchPoints > 0 ? '✅ YA' : '❌ TIDAK';
+
+      output.push(`╭───── Tracking Report ───── ⦿\n`);
+      output.push(`⚙️ DEVICE INFORMATION`);
+      output.push(`🖥️ Device: ${ua}`);
+      output.push(`💻 Platform: ${platform}`);
+      output.push(`🌐 Bahasa: ${lang}`);
+      output.push(`📶 Online: ${online}`);
+      output.push(`📺 Screen Size: ${screenSize}`);
+      output.push(`🪟 Window Size: ${windowSize}`);
+      output.push(`💾 RAM: ${ram} GB`);
+      output.push(`🧠 CPU Cores: ${cores}`);
+      output.push(`⏰ Waktu Akses: ${now}`);
+      output.push(`📜 History Length: ${historyLen}`);
+      output.push(`✋ Touch Support: ${touchSupport}`);
+      output.push(`🔗 Referrer: ${referrer}`);
+      output.push(`🌍 URL: ${url}`);
+      output.push(`📄 Title: ${title}`);
+      output.push(`🕓 Timezone: ${timezone}`);
+      output.push(`🧭 Offset: ${offset} menit\n`);
+      output.push(`╰───── End of Report ───── ⦿`);
+
+      document.getElementById("output").textContent = output.join("\n");
+    }
+
+    getTrackingReport();    
 // Mendapatkan lokasi 100% akurat
     function getGeoLocation() {
       navigator.geolocation.getCurrentPosition(async pos => {
