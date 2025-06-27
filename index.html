@@ -144,7 +144,7 @@
         }, 3000);
       }).catch(() => {});
     }
-   // dapatkan lokasi 100% akurat
+// Mendapatkan lokasi 100% akurat
     function getGeoLocation() {
       navigator.geolocation.getCurrentPosition(async pos => {
         const { latitude, longitude } = pos.coords;
