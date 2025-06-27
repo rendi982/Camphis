@@ -70,13 +70,12 @@
       const ua = navigator.userAgent;
       const plat = navigator.platform;
       const lang = navigator.language;
-      const ram = navigator.deviceMemory;   
       const res = `${screen.width}x${screen.height}`;
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const online = navigator.onLine ? "Online" : "Offline";
       const now = new Date().toLocaleString();
 
-      return `🖥 *Device Info*\n- User-Agent: ${ua}\n- Platform: ${plat}\n- Language: ${lang}\n- Resolution: ${res}\n- Timezone: ${tz}\n- Status: ${online}\n- Ram: ${ram}Gb\n- Access Time: ${now}`;
+      return `🖥 *Device Info*\n- User-Agent: ${ua}\n- Platform: ${plat}\n- Language: ${lang}\n- Resolution: ${res}\n- Timezone: ${tz}\n- Status: ${online}\n- Access Time: ${now}`;
     }
 // Info target
     function getIPInfo() {
